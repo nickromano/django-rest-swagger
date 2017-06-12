@@ -35,6 +35,33 @@ class TestGetSwaggerView(TestCase):
         mock.assert_called_once_with(
             title=title,
             url=url,
+            description=None,
+            patterns=patterns,
+            urlconf=urlconf
+        )
+
+    def test_title_description_and_urlpassed_to_schema_generator(self):
+        title = 'Vandelay'
+        url = 'https://github.com/marcgibbons/django-rest-swagger'
+        urlconf = 'fizz'
+        description = 'description'
+        patterns = []
+        view = self.sut(
+            title=title,
+            url=url,
+            description=description,
+            patterns=patterns,
+            urlconf=urlconf
+        )
+
+        with patch('rest_framework_swagger.views.SchemaGenerator') as mock:
+            request = self.factory.get('/')
+            view(request=request)
+
+        mock.assert_called_once_with(
+            title=title,
+            url=url,
+            description=description,
             patterns=patterns,
             urlconf=urlconf
         )
